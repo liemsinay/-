@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .image {
+            width: 150px; 
+            height: 150px;
+            position: absolute;
+        }
+        #wizard {
+            top: 100px;
+            left: 50px;
+        }
+        #banana {
+            top: 200px;
+            left: 200px;
+        }
+        .container {
+            min-width: 90vh;
+            min-height: 85vh;
+            margin: 10px;
+            background-color: rgb(78, 172, 112);
+            padding: 5vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        #timer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+        #congrats {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>נסה להביא לקוף את הבננה</h1>
+    <div class="container">
+        <div id="timer">Time left: <span id="countdown">60</span> seconds</div>
+        <img id="wizard" class="image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQPtLd5_urIuqxlCBrkcaQwJafChA3uHeRsA&s">
+        <img id="banana" class="image" src="images.jpg">
+        <button onclick="teleport()">Teleport</button>
+        <div id="congrats">כל הכבוד</div>
+    </div>
+
+    <script>
+        const maxHeight = window.innerHeight - 150;
+        const maxWidth = window.innerWidth - 150;
+        const wizard = document.getElementById("wizard");
+        const banana = document.getElementById("banana");
+        let countdown = 60;
+        const countdownDisplay = document.getElementById('countdown');
+        const congrats = document.getElementById('congrats');
+
+        function moveRandomly(element) {
+            const randomTopPosition = Math.floor(Math.random() * maxHeight);
+            const randomLeftPosition = Math.floor(Math.random() * maxWidth);
+
+            element.style.top = randomTopPosition + "px";
+            element.style.left = randomLeftPosition + "px";
+        }
+
+        function teleport() {
+            moveRandomly(wizard);
+            moveRandomly(banana);
+            checkCollision();
+        }
+
+        function checkCollision() {
+            const wizardRect = wizard.getBoundingClientRect();
+            const bananaRect = banana.getBoundingClientRect();
+
+            if (
+                wizardRect.left < bananaRect.right &&
+                wizardRect.right > bananaRect.left &&
+                wizardRect.top < bananaRect.bottom &&
+                wizardRect.bottom > bananaRect.top
+            ) {
+                congrats.style.display = 'block';
+            } else {
+                congrats.style.display = 'none';
+            }
+        }
+
+        setInterval(() => {
+            countdown--;
+            countdownDisplay.textContent = countdown;
+            if (countdown <= 0) {
+                clearInterval();
+                countdownDisplay.textContent = 'Time\'s up!';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
